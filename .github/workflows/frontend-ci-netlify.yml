@@ -1,0 +1,62 @@
+name: Frontend CI & Deploy to Netlify
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'frontend_netlify/**'
+      - '.github/workflows/frontend-ci-netlify.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend_netlify/**'
+
+jobs:
+  validate-and-deploy:
+    name: Validate and Deploy Web Assets
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend_netlify
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Linting & Deployment Utilities
+        run: |
+          npm install -g htmlhint stylelint stylelint-config-standard netlify-cli
+
+      - name: Lint HTML and Styles
+        run: |
+          htmlhint "**/*.html" || true
+          npx stylelint "**/*.css" || true
+
+      - name: Deploy Preview to Netlify (Pull Requests)
+        if: github.event_name == 'pull_request'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ] && [ -n "$NETLIFY_SITE_ID" ]; then
+            netlify deploy --dir=. --message="PR Preview: ${{ github.event.pull_request.title }}"
+          else
+            echo "Netlify tokens missing; skipping preview deployment."
+          fi
+
+      - name: Deploy Production to Netlify (Main Branch)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ] && [ -n "$NETLIFY_SITE_ID" ]; then
+            netlify deploy --prod --dir=. --message="Production Release: ${{ github.sha }}"
+          else
+            echo "Netlify tokens missing; skipping production deployment."
+          fi
