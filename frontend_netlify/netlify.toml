@@ -1,0 +1,36 @@
+[build]
+  publish = "."
+
+# Production Reverse Proxy: Forward all API calls to the Render FastAPI backend
+# This eliminates cross-origin preflight overhead and prevents CORS domain locks.
+[[redirects]]
+  from = "/api/*"
+  to = "https://msme-navigator-backend.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# SPA Fallback routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security Headers & Resource Caching
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
