@@ -1,0 +1,66 @@
+[
+  {
+    "id": "KA-IPS-2025",
+    "name": "Karnataka Industrial Policy 2025-30: Investment Promotion Subsidy",
+    "level": "State",
+    "state": "Karnataka",
+    "authority": "Department of Commerce & Industries (Karnataka)",
+    "target_sector": ["Manufacturing", "Food Processing"],
+    "enterprise_types": ["Micro", "Small"],
+    "max_turnover_lakhs": 5000.0,
+    "max_machinery_lakhs": 1000.0,
+    "incentive_structure": {
+      "Zone 1 (Backward)": {"percentage": 35.0, "cap_lakhs": 35.0},
+      "Zone 2 (Developing)": {"percentage": 25.0, "cap_lakhs": 25.0},
+      "Zone 3 (Urbanized)": {"percentage": 0.0, "cap_lakhs": 0.0}
+    },
+    "documents_required": [
+      "Udyam Registration Certificate",
+      "Factory License / Trade NOC",
+      "CA Certified Plant & Machinery Valuation",
+      "Power Sanction Letter with Connected Load"
+    ],
+    "portal_url": "https://kum.karnataka.gov.in"
+  },
+  {
+    "id": "CEN-CGTMSE-2026",
+    "name": "CGTMSE Collateral-Free Credit Guarantee Scheme",
+    "level": "Central",
+    "state": "All-India",
+    "authority": "Ministry of MSME & SIDBI",
+    "target_sector": ["Manufacturing", "Services", "Food Processing", "IT/ITES"],
+    "enterprise_types": ["Micro", "Small"],
+    "max_turnover_lakhs": 5000.0,
+    "max_machinery_lakhs": 1000.0,
+    "incentive_structure": {
+      "All Zones": {"percentage": 85.0, "cap_lakhs": 1000.0}
+    },
+    "documents_required": [
+      "Udyam Registration Certificate",
+      "Detailed Project Report (DPR)",
+      "Last 2 Years Audited Balance Sheet & P&L",
+      "6 Months Bank Statements"
+    ],
+    "portal_url": "https://www.cgtmse.in"
+  },
+  {
+    "id": "CEN-ZED-CERT",
+    "name": "MSME Sustainable (ZED) Certification Scheme",
+    "level": "Central",
+    "state": "All-India",
+    "authority": "Quality Council of India (QCI) & MoMSME",
+    "target_sector": ["Manufacturing", "Food Processing"],
+    "enterprise_types": ["Micro", "Small", "Medium"],
+    "max_turnover_lakhs": 25000.0,
+    "max_machinery_lakhs": 5000.0,
+    "incentive_structure": {
+      "All Zones": {"percentage": 80.0, "cap_lakhs": 5.0}
+    },
+    "documents_required": [
+      "Udyam Registration Certificate",
+      "Self-Assessment Audit Report",
+      "GST Returns (GSTR-3B)"
+    ],
+    "portal_url": "https://zed.msme.gov.in"
+  }
+]
