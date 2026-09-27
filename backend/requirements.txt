@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+psycopg2-binary
+pydantic
+pydantic[email]
+pydantic-settings
+pyjwt
+pwdlib[argon2,bcrypt]
+langchain
+langchain-groq
+langchain-core
+langchain-community
+langgraph
+python-multipart
+httpx
