@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env.*
+!.env.example
+venv/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Database & Uploads
+*.sqlite3
+*.db
+/tmp/
+uploads/
+
+# Node / Frontend
+node_modules/
+.npm
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
