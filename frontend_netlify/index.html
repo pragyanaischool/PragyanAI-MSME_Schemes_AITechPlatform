@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MSME Scheme & Subsidy AI Navigator - Central and Karnataka State Subsidies, Evaluation and DIC Administration Hub">
+  <title> PragyanAI - MSME Scheme & Subsidy AI Navigator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-badge">GOI & KA</span>
+        <div>
+          <h1>MSME AI Navigator</h1>
+          <p class="subtitle">Unified Central & Karnataka Subsidy Portal</p>
+        </div>
+      </div>
+      <div id="userBadge" class="user-badge hidden">
+        <div class="user-details">
+          <span id="badgeName" class="badge-name"></span>
+          <span id="badgeRole" class="badge-role"></span>
+          <span id="badgeJurisdiction" class="badge-jurisdiction"></span>
+        </div>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- AUTHENTICATION CARD -->
+    <section id="authSection" class="card auth-card">
+      <div class="auth-tabs">
+        <button id="tabLogin" class="tab-btn active" type="button">Sign In</button>
+        <button id="tabRegister" class="tab-btn" type="button">Register New Account</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="loginForm" class="auth-form">
+        <h3>Account Access</h3>
+        <p class="form-hint">Sign in with your enterprise, nodal department, or administrative credentials.</p>
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="officer@dic.karnataka.gov.in or firm@domain.in" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="registerForm" class="auth-form hidden">
+        <h3>Create New Profile</h3>
+        <p class="form-hint">Onboard as an enterprise, scheme publishing entity, or DIC government officer.</p>
+        <div class="form-group">
+          <label for="regName">Full Legal Name / Entity Name</label>
+          <input type="text" id="regName" placeholder="e.g., Precision Gears LLP / DIC Bengaluru" required>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" placeholder="account@organization.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="regPass">Set Strong Password</label>
+          <input type="password" id="regPass" placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regRole">Platform Role</label>
+            <select id="regRole">
+              <option value="msme" selected>MSME Business Applicant</option>
+              <option value="entity">Issuing Entity (Bank / SIDBI / KVIC)</option>
+              <option value="admin">State Government (DIC Administration)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="regJurisdiction">Jurisdiction</label>
+            <select id="regJurisdiction">
+              <option value="Karnataka" selected>Karnataka State</option>
+              <option value="Central">Central (All-India Schemes)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register Account</button>
+      </form>
+    </section>
+
+    <!-- 1. MSME APPLICANT DASHBOARD -->
+    <section id="msmeDashboard" class="dashboard-view hidden">
+      <div class="card banner-card">
+        <div class="banner-content">
+          <h2 id="msmeBannerTitle">Enterprise Overview</h2>
+          <p id="msmeBannerSubtitle">Keep your turnover, machinery capital, and GST filings synchronized.</p>
+        </div>
+        <div class="banner-status">
+          <span class="label">KYC Verification</span>
+          <span id="kycStatusBadge" class="status-pill pending">Pending</span>
+        </div>
+      </div>
+
+      <!-- Profile Intake & Recalculate Form -->
+      <div class="card">
+        <h3>🏢 Profile & Operational Metrics</h3>
+        <form id="msmeProfileForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="msmeLegalName">Legal Enterprise Name</label>
+              <input type="text" id="msmeLegalName" required>
+            </div>
+            <div class="form-group">
+              <label for="msmeGstn">GST Identification (GSTN)</label>
+              <input type="text" id="msmeGstn" maxlength="15" required>
+            </div>
+            <div class="form-group">
+              <label for="msmeUdyam">Udyam Registration No.</label>
+              <input type="text" id="msmeUdyam" required>
+            </div>
+            <div class="form-group">
+              <label for="msmeDistrict">District / Industrial Area</label>
+              <input type="text" id="msmeDistrict" value="Bengaluru Rural" required>
+            </div>
+            <div class="form-group">
+              <label for="msmeZone">Industrial Zone Classification</label>
+              <select id="msmeZone">
+                <option value="Zone 1 (Backward)">Zone 1 (Backward - 35% Capital Subsidy)</option>
+                <option value="Zone 2 (Developing)" selected>Zone 2 (Developing - 25% Capital Subsidy)</option>
+                <option value="Zone 3 (Urbanized)">Zone 3 (Urbanized - Core Infrastructure)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="msmeSector">Sector</label>
+              <select id="msmeSector">
+                <option value="Manufacturing" selected>Manufacturing</option>
+                <option value="Services">Services</option>
+                <option value="Food Processing">Food Processing</option>
+                <option value="IT/ITES">IT / ITES</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="msmeTurnover">Annual Turnover (₹ in Lakhs)</label>
+              <input type="number" id="msmeTurnover" step="0.1" min="1" value="50" required>
+            </div>
+            <div class="form-group">
+              <label for="msmeMachinery">Plant & Machinery Inv (₹ in Lakhs)</label>
+              <input type="number" id="msmeMachinery" step="0.1" min="1" value="30" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save & Re-evaluate Eligible Subsidies</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Matched Schemes Cards -->
+      <div class="card">
+        <h3>🎯 Matched Central & Karnataka State Subsidies</h3>
+        <p class="form-hint">Deterministic evaluation against state investment policies and central credit guarantees.</p>
+        <div id="msmeSchemesContainer" class="schemes-grid"></div>
+      </div>
+
+      <!-- Document Vault & Claim Filing -->
+      <div class="two-col-grid">
+        <div class="card">
+          <h3>📋 Compliance Document Vault</h3>
+          <p class="form-hint">Attach PDF documents to auto-bind to your subsidy claims.</p>
+          <div class="vault-upload-row">
+            <select id="vaultDocType">
+              <option value="udyam_cert">Udyam Registration Certificate</option>
+              <option value="gstr_3b">Last 6 Months GSTR-3B</option>
+              <option value="dpr">Detailed Project Report (DPR)</option>
+              <option value="ca_machinery_val">CA Machinery Valuation Certificate</option>
+            </select>
+            <input type="file" id="vaultFileInput" accept=".pdf,.png,.jpg">
+            <button id="uploadVaultBtn" class="btn btn-secondary btn-sm" type="button">Upload to Vault</button>
+          </div>
+          <div id="vaultUploadFeedback" class="feedback-msg"></div>
+          <ul id="vaultFilesList" class="file-list"></ul>
+        </div>
+
+        <!-- Conversational Groq RAG Copilot -->
+        <div class="card">
+          <h3>💬 Scheme AI Advisor (Groq Llama-3.3)</h3>
+          <div id="copilotChatBox" class="chat-viewport">
+            <div class="chat-msg assistant">Namaskara! I am your MSME Subsidy Navigator. Ask about capital subsidies, power tariffs, or CGTMSE loans.</div>
+          </div>
+          <div class="chat-controls">
+            <select id="copilotLang" class="lang-select">
+              <option value="English" selected>English</option>
+              <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+              <option value="Hindi">हिन्दी (Hindi)</option>
+            </select>
+            <input type="text" id="copilotInput" placeholder="Ask policy questions in your language..." autocomplete="off">
+            <button id="copilotSendBtn" class="btn btn-primary" type="button">Ask</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Applications -->
+      <div class="card">
+        <h3>📍 Track Active Subsidy Applications</h3>
+        <div id="msmeApplicationsTableWrapper" class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>App ID</th>
+                <th>Scheme Name</th>
+                <th>Claim Value</th>
+                <th>Sanctioned Value</th>
+                <th>Current Stage</th>
+              </tr>
+            </thead>
+            <tbody id="msmeApplicationsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. STATE GOVERNMENT / DIC ADMIN DASHBOARD -->
+    <section id="adminDashboard" class="dashboard-view hidden">
+      <div class="card banner-card">
+        <div>
+          <h2>🏛️ DIC Administration & State Command Desk</h2>
+          <p>Jurisdiction: <strong id="adminJurisdictionText">Karnataka</strong> | Oversight & Sanction Workflow</p>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Registered MSMEs</div>
+          <div id="adminStatMsmes" class="metric-value">0</div>
+        </div>
+        <div class="metric-card alert">
+          <div class="metric-label">Pending Verifications</div>
+          <div id="adminStatPending" class="metric-value">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Active Claims in Pipeline</div>
+          <div id="adminStatClaims" class="metric-value">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🏢 Enterprise Verification Queue</h3>
+        <p class="form-hint">Scrutinize business legitimacy, GST compliance, and zone classification.</p>
+        <div id="adminVerificationList" class="verification-list"></div>
+      </div>
+    </section>
+
+    <!-- 3. ISSUING ENTITY / BANK DASHBOARD -->
+    <section id="entityDashboard" class="dashboard-view hidden">
+      <div class="card banner-card">
+        <div>
+          <h2 id="entityDeptTitle">Nodal Agency / Bank Operations</h2>
+          <p>Configure subsidy budgets, criteria rules, and scrutinize project dossiers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>➕ Publish New Scheme or Subvention Window</h3>
+        <form id="entityCreateSchemeForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="newSchemeCode">Scheme Code</label>
+              <input type="text" id="newSchemeCode" placeholder="KA-ELEC-2026" required>
+            </div>
+            <div class="form-group">
+              <label for="newSchemeTitle">Scheme Title</label>
+              <input type="text" id="newSchemeTitle" placeholder="Electric Equipment Capital Subsidy" required>
+            </div>
+            <div class="form-group">
+              <label for="newSchemeType">Jurisdiction Level</label>
+              <select id="newSchemeType">
+                <option value="State">State (Karnataka)</option>
+                <option value="Central">Central (All-India)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="newSchemePct">Subsidy Percentage (%)</label>
+              <input type="number" id="newSchemePct" min="5" max="100" value="25" required>
+            </div>
+            <div class="form-group">
+              <label for="newSchemeCap">Max Cap (₹ in Lakhs)</label>
+              <input type="number" id="newSchemeCap" min="1" value="30" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Publish Scheme to Database & Vector Index</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>🔍 Claim Dossier Scrutiny Queue</h3>
+        <div id="entityClaimsList" class="claims-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>MSME Scheme & Subsidy AI Navigator &copy; 2026. Empowering Indian Enterprises with Deterministic Rules & Groq LLMs.</p>
+  </footer>
+
+  <!-- Scripts: Core API Client, Auth Controller, and Dashboards -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard_msme.js"></script>
+  <script src="js/dashboard_admin.js"></script>
+  <script src="js/dashboard_entity.js"></script>
+</body>
+</html>
