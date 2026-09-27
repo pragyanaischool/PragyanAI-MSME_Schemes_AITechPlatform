@@ -1,0 +1,48 @@
+name: Streamlit App Validation Suite
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'streamlit_admin/**'
+      - '.github/workflows/streamlit-test.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'streamlit_admin/**'
+
+jobs:
+  test-streamlit:
+    name: Smoke Test Multi-Page App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: streamlit_admin
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: streamlit_admin/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff
+
+      - name: Syntax and Import Verification
+        run: |
+          ruff check .
+          python -m compileall pages/ pages_admin/ pages_entity/ pages_msme/ app.py
+
+      - name: Streamlit Headless Execution Test
+        env:
+          BACKEND_API_URL: http://localhost:8000
+        run: |
+          timeout 10s streamlit run app.py --server.headless true || [ $? -eq 124 ]
